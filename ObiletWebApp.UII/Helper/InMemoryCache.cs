@@ -8,18 +8,8 @@ namespace ObiletWebApp.UII.Helper
 {
     public static class InMemoryCache
     {
-        private static IMemoryCache _memoryCache;
-
-        static InMemoryCache()
-        {
-         
-        }
-        public static void Configure(IMemoryCache memoryCache)
-        {
-            _memoryCache = memoryCache;
-
-        }
-        public static void setKeyInMemory<T>(string key,T Data)
+       
+        public static void setKeyInMemory<T>(string key,T Data, IMemoryCache _memoryCache)
         {
            
                 MemoryCacheEntryOptions options = new MemoryCacheEntryOptions();
@@ -28,12 +18,12 @@ namespace ObiletWebApp.UII.Helper
                
             
         }
-        private static T GetValueInMemory<T>(string key, T Data)
+        public static T GetValueInMemory<T>(string key, IMemoryCache _memoryCache)
         {
-            _memoryCache.TryGetValue<T> (key, out Data);  // varsa alır yoksa oluşturur.
+            
             return _memoryCache.Get<T>(key);
         }
-        private static void CachePriority<T>(string key, string Data)
+        private static void CachePriority<T>(string key, string Data, IMemoryCache _memoryCache)
         {
             MemoryCacheEntryOptions options = new MemoryCacheEntryOptions();
             options.Priority = CacheItemPriority.High;
@@ -44,7 +34,7 @@ namespace ObiletWebApp.UII.Helper
             _memoryCache.Set<string>(key, Data, options);
         }
 
-        public static void DeleteInMemory(string key)
+        public static void DeleteInMemory(string key, IMemoryCache _memoryCache)
         {
             _memoryCache.Remove(key);
         }

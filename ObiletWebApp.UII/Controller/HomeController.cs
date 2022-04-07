@@ -32,9 +32,12 @@ namespace ObiletWebApp.UII.Controllers
 
         public IActionResult Index()
         {
+            var data = new SessionResponseModel();
 
             var ipAdress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            SessionRequestModel request = new SessionRequestModel()
+            if (!_memoryCache.TryGetValue(ipAdress, out data))
+            {
+                SessionRequestModel request = new SessionRequestModel()
             {
                 BrowserName = _detection.Browser.Type.GetDescription(),
                 BrowserVersion = _detection.Browser.Version.ToString(),
@@ -44,19 +47,20 @@ namespace ObiletWebApp.UII.Controllers
 
             };
             var result= _obiletService.GetSession(request);
-            SessionResponseModel data = result.Data;
+            data = result.Data;
             if (result.Success)
             {
-                if (!_memoryCache.TryGetValue(ipAdress, out data))
-                {
-                    InMemoryCache.setKeyInMemory<SessionResponseModel>(ipAdress, data);
-                }
+               
+                    InMemoryCache.setKeyInMemory<SessionResponseModel>(ipAdress, result.Data,_memoryCache);
+                
+            }
             }
             else
             {
+                data=InMemoryCache.GetValueInMemory<SessionResponseModel>(ipAdress, _memoryCache);
 
             }
-           return View();
+            return View();
         }
         public IActionResult Privacy()
         {

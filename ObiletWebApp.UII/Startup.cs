@@ -50,9 +50,7 @@ namespace ObiletWebApp.UII
             services.AddSingleton<IObiletApi, ObiletApi>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddRazorPages();
-            services.AddControllersWithViews()
-                .AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
-            InMemoryCache.Configure(services.BuildServiceProvider().GetService<IMemoryCache>());
+         
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
