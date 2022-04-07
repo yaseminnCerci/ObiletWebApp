@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ObiletWebApp.Api\ObiletWebApp.Api.csproj" />
+    <ProjectReference Include="..\ObiletWebApp.Core\ObiletWebApp.Core.csproj" />
+    <ProjectReference Include="..\ObiletWebApp.Models\ObiletWebApp.Models.csproj" />
+  </ItemGroup>
+
+</Project>
