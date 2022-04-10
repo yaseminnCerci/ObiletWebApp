@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Newtonsoft.Json;
 
 namespace ObiletWebApp.Api.Models
 {
-
     public  class GetBusJourneysResponseModel
     {
         [JsonProperty("id")]
@@ -94,7 +90,6 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("disable-sales-without-date-of-birth")]
         public bool DisableSalesWithoutDateOfBirth { get; set; }
     }
-
     public  class Feature
     {
         [JsonProperty("id")]
@@ -118,7 +113,6 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("fore-color")]
         public string ForeColor { get; set; }
     }
-
     public  class Journey
     {
         [JsonProperty("kind")]
@@ -175,7 +169,6 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("available")]
         public string Available { get; set; }
     }
-
     public  class Policy
     {
         [JsonProperty("max-seats")]
@@ -199,7 +192,6 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("lht")]
         public bool Lht { get; set; }
     }
-
     public  class Stop
     {
         [JsonProperty("name")]
@@ -218,5 +210,4 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("is-destination")]
         public bool IsDestination { get; set; }
     }
-
 }

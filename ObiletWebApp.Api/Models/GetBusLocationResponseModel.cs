@@ -19,7 +19,6 @@ namespace ObiletWebApp.Api.Models
         [JsonProperty("geo-location")]
         public GeoLocations GeoLocation { get; set; }
 
-
         [JsonProperty("zoom")]
         public string Zoom { get; set; }
 
@@ -37,8 +36,6 @@ namespace ObiletWebApp.Api.Models
 
         [JsonProperty("keywords")]
         public string Keywords { get; set; }
-
-
     }
 
    public class GeoLocations
@@ -51,6 +48,5 @@ namespace ObiletWebApp.Api.Models
 
        [JsonProperty("zoom")]
        public string Zoom { get; set; }
-
-    }
+   }
 }

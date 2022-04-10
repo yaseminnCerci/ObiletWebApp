@@ -9,7 +9,5 @@ namespace ObiletWebApp.Services.Abstract
         IDataResult<SessionResponseModel> GetSession(SessionRequestModel request);
         IDataResult<List<BusLocationListItem>> GetBusLocation(BusLocationRequestModel request);
         IDataResult<List<BusJourneysResponseModel>> GetBusJourneys(BusJourneryRequestModel request);
-
-
     }
 }

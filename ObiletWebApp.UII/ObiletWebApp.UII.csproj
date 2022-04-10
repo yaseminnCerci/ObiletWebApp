@@ -5,7 +5,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ObiletWebApp.Models\ObiletWebApp.Models.csproj" />
     <ProjectReference Include="..\ObiletWebApp.Services\ObiletWebApp.Services.csproj" />
   </ItemGroup>
 

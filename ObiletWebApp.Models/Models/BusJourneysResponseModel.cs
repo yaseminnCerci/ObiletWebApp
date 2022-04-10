@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace ObiletWebApp.Models.Models
 {
-  public  class BusJourneysResponseModel
+    public class BusJourneysResponseModel
     {
         public string PartnerName { get; set; }
         public long PartnerId { get; set; }
@@ -27,12 +23,10 @@ namespace ObiletWebApp.Models.Models
         public long DestinationLocationId { get; set; }
     }
 
-  public class Stations
-  {
-      public string Name { get; set; }
-      public string Station { get; set; }
-      public DateTime? Time { get; set; }
-  
-
+    public class Stations
+    {
+        public string Name { get; set; }
+        public string Station { get; set; }
+        public DateTime? Time { get; set; }
     }
 }

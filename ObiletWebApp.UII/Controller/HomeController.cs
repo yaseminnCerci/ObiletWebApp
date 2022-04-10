@@ -1,19 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Runtime.Intrinsics.X86;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Memory;
+using ObiletWebApp.Api.Models;
 using ObiletWebApp.Core.Extentions;
 using ObiletWebApp.Models.Models;
 using ObiletWebApp.Services.Abstract;
 using ObiletWebApp.UII.Helper;
 using ObiletWebApp.UII.Models;
 using Wangkanai.Detection;
-using IDetectionBuilder = Microsoft.Extensions.DependencyInjection.IDetectionBuilder;
 
 namespace ObiletWebApp.UII.Controllers
 {
@@ -24,27 +22,123 @@ namespace ObiletWebApp.UII.Controllers
         private readonly IObiletService _obiletService;
         private static IHttpContextAccessor _contextAccessor;
         private readonly IBrowserResolver _detection;
-        public HomeController(ILogger<HomeController> logger, IObiletService obiletService, IMemoryCache memoryCache, IHttpContextAccessor contextAccessor, IBrowserResolver detection)
+        private readonly string _ipAdress;
+        private readonly INotyfService _notify;
+        public HomeController(ILogger<HomeController> logger, IObiletService obiletService, IMemoryCache memoryCache, IHttpContextAccessor contextAccessor, IBrowserResolver detection, INotyfService notifyService)
         {
             _obiletService = obiletService;
             _logger = logger;
             _memoryCache = memoryCache;
             _contextAccessor = contextAccessor;
             _detection = detection;
+            _notify = notifyService;
+            _ipAdress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
         }
-
         public IActionResult Index(BusLocationViewModel model)
         {
-            var sessionData = new SessionResponseModel();
+            model.Date = DateTime.Now.AddDays(1);
+            var sessionData = SessionDataSet();
+            if (sessionData.Success)
+            {
+                var informationModels = UserBusLocationInformationGet(sessionData.Data.SessionId);
+                if (informationModels != null)
+                {
+                    model.Date = informationModels.Date;
+                    model.OriginId = informationModels.OriginId;
+                    model.DestinationId = informationModels.DestinationId;
+                }
 
-            var ipAdress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            if (!_memoryCache.TryGetValue(ipAdress, out sessionData))
+                BusLocationRequestModel busrequest = new BusLocationRequestModel()
+                {
+                    DeviceSession = sessionData.Data,
+                    Date = DateTime.Now,
+                    Language = "tr-TR",
+                    OriginId = model.OriginId,
+                    DestinationId = model.DestinationId
+                };
+                var resultBusLocation = _obiletService.GetBusLocation(busrequest);
+                if (resultBusLocation.Success) model.BusLocationList = resultBusLocation.Data;
+                else _notify.Error(resultBusLocation.Message);
+            }
+            else
+            {
+                _notify.Error(sessionData.Message);
+
+            }
+
+            return View(model);
+        }
+
+        public IActionResult BusLocationSearch(string Search)
+        {
+            var sessionData = InMemoryCache.GetValueInMemory<SessionResponseModel>(_ipAdress, _memoryCache);
+            BusLocationRequestModel busrequest = new BusLocationRequestModel()
+            {
+                DeviceSession = sessionData,
+                Date = DateTime.Now,
+                Language = "tr-TR",
+                Data = Search
+
+            };
+            var resultBusLocation = _obiletService.GetBusLocation(busrequest);
+            var data = string.Empty;
+            if (resultBusLocation.Success)
+            {
+                foreach (var item in resultBusLocation.Data)
+                {
+                    data += "<option value=" + item.Id + "> " + item.Name + "</option>";
+                }
+            }
+            return Json(new
+            {
+                result = true,
+                message = "İşlem Başarılı",
+                Object = data,
+            });
+        }
+
+        public IActionResult BusJourney(BusJourneryRequestModel model)
+        {
+            var viewmodel = new BusJourneysViewModel();
+
+            model.DeviceSession = InMemoryCache.GetValueInMemory<SessionResponseModel>(_ipAdress, _memoryCache);
+            model.Language = "tr-TR";
+            var resultBusJourneys = _obiletService.GetBusJourneys(model);
+            if (resultBusJourneys.Success)
+            {
+                var informationModels = new UserBusLocationInformationModels()
+                {
+                    Date = model.Date,
+                    OriginId = model.OriginId,
+                    DestinationId = model.DestinationId
+                };
+                UserBusLocationInformationSet(model.DeviceSession.SessionId, informationModels);
+                viewmodel.BusJourneysList = resultBusJourneys.Data;
+                viewmodel.DestinationLocation = resultBusJourneys.Data.First().DestinationLocation;
+                viewmodel.OriginLocation = resultBusJourneys.Data.First().OriginLocation;
+                viewmodel.Date = model.Date;
+            }
+            else
+            {
+                _notify.Error(resultBusJourneys.Message);
+            }
+            return View(viewmodel);
+        }
+
+
+
+        public ViewResultModel<SessionResponseModel> SessionDataSet()
+        {
+            ViewResultModel<SessionResponseModel> model = new ViewResultModel<SessionResponseModel>() { Success = true };
+            
+               var sessionData = new SessionResponseModel();
+            if (!_memoryCache.TryGetValue(_ipAdress, out sessionData))
             {
                 SessionRequestModel request = new SessionRequestModel()
                 {
                     BrowserName = _detection.Browser.Type.GetDescription(),
                     BrowserVersion = _detection.Browser.Version.ToString(),
-                    IpAdress = ipAdress,
+                    IpAdress = _ipAdress,
                     Port = _contextAccessor.HttpContext.Connection.RemotePort.ToString(),
                     Type = 7,
 
@@ -53,131 +147,58 @@ namespace ObiletWebApp.UII.Controllers
                 sessionData = result.Data;
                 if (result.Success)
                 {
-                    InMemoryCache.setKeyInMemory<SessionResponseModel>(ipAdress, result.Data, _memoryCache);
+                    InMemoryCache.setKeyInMemory<SessionResponseModel>(_ipAdress, result.Data, _memoryCache);
+                    model.Data = sessionData;
+                    return model;
+                }
+                else
+                {
+                    model.Success = false;
+                    model.Message = result.Message;
+                    return model;
+              
                 }
             }
             else
             {
-                sessionData = InMemoryCache.GetValueInMemory<SessionResponseModel>(ipAdress, _memoryCache);
+                model.Data = InMemoryCache.GetValueInMemory<SessionResponseModel>(_ipAdress, _memoryCache);
+                return model;
+             
             }
 
+           
+        }
+        public UserBusLocationInformationModels UserBusLocationInformationGet(string sessionId)
+        {
             var informationModels = new UserBusLocationInformationModels();
-            if (_memoryCache.TryGetValue(sessionData.SessionId, out informationModels))
+            if (_memoryCache.TryGetValue(sessionId, out informationModels))
             {
-                informationModels = InMemoryCache.GetValueInMemory<UserBusLocationInformationModels>(sessionData.SessionId, _memoryCache);
-                model.Date = informationModels.Date;
-                model.OriginId = informationModels.OriginId;
-                model.DestinationId = informationModels.DestinationId;
+                return InMemoryCache.GetValueInMemory<UserBusLocationInformationModels>(sessionId, _memoryCache);
             }
-            else
-            {
-                model.Date = DateTime.Now.AddDays(1);
-            }
-            //var busLocationData = new List<BusLocationListItem>();
-            //if (!_memoryCache.TryGetValue("busLocation", out busLocationData))
-            //{
-            BusLocationRequestModel busrequest = new BusLocationRequestModel()
-                {
-                    DeviceSession = sessionData,
-                    Date = DateTime.Now,
-                    Language = "tr-TR",
-                    OriginId = model.OriginId,
-                    DestinationId = model.DestinationId
-                }; 
-                var resultBusLocation = _obiletService.GetBusLocation(busrequest);
-            //    busLocationData = result.Data;
-                
-            //    if (result.Success)
-            //    {
-            //        InMemoryCache.setKeyInMemory<List<BusLocationListItem>>("busLocation", busLocationData, _memoryCache);
-            //    }
-
-            //}
-            //else
-            //{
-            //    busLocationData = InMemoryCache.GetValueInMemory<List<BusLocationListItem>>("busLocation", _memoryCache);
-            //}
-
-            model.BusLocationList = resultBusLocation.Data;
-
-            return View(model);
+            return null;
         }
-
-        public IActionResult BusLocationSearch(string Search)
+        public void UserBusLocationInformationSet(string sessionId, UserBusLocationInformationModels informationModels)
         {
-           var  sessionData = InMemoryCache.GetValueInMemory<SessionResponseModel>(_contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString(), _memoryCache);
-            BusLocationRequestModel busrequest = new BusLocationRequestModel()
+            var informationModelsmemory = new UserBusLocationInformationModels();
+            if (!_memoryCache.TryGetValue(sessionId, out informationModelsmemory))
             {
-                DeviceSession = sessionData,
-                Date = DateTime.Now,
-                Language = "tr-TR",Data = Search
-                
-            };  var resultBusLocation = _obiletService.GetBusLocation(busrequest);
-            var data = "";
-            foreach (var item in resultBusLocation.Data)
-            {
-                data += "<option value="+ item.Id +"> " + item.Name + "</option>";
-            }
-            return Json(new
-            {
-                result = true,//result.Success,
-                message = "İşlem Başarılı",
-                Object = data,// result.Object.Id
-            });
-        }
 
-        public IActionResult BusJourney(BusJourneryRequestModel model)
-        {
-            var viewmodel = new BusJourneysViewModel();
-            var ipAdress = _contextAccessor.HttpContext.Connection.RemoteIpAddress.ToString();
-            model.DeviceSession = InMemoryCache.GetValueInMemory<SessionResponseModel>(ipAdress, _memoryCache);
-            model.Language = "tr-TR";
-            var resultBusLocation = _obiletService.GetBusJourneys(model);
-
-
-            if (resultBusLocation.Success)
-            {
-                var informationModels = new UserBusLocationInformationModels();
-            if (!_memoryCache.TryGetValue(model.DeviceSession.SessionId, out informationModels))
-            {
-                informationModels = new UserBusLocationInformationModels()
-                {
-                    Date = model.Date,
-                    OriginId = model.OriginId,
-                    DestinationId = model.DestinationId
-                };
-                    InMemoryCache.setKeyInMemory<UserBusLocationInformationModels>(model.DeviceSession.SessionId,
+                InMemoryCache.setKeyInMemory<UserBusLocationInformationModels>(sessionId,
                     informationModels, _memoryCache);
             }
             else
             {
-                informationModels = new UserBusLocationInformationModels()
-                {
-                    Date = model.Date,
-                    OriginId = model.OriginId,
-                    DestinationId = model.DestinationId
-                };
-                    InMemoryCache.DeleteInMemory(model.DeviceSession.SessionId, _memoryCache);
-                InMemoryCache.setKeyInMemory<UserBusLocationInformationModels>(model.DeviceSession.SessionId,
+                InMemoryCache.DeleteInMemory(sessionId, _memoryCache);
+                InMemoryCache.setKeyInMemory<UserBusLocationInformationModels>(sessionId,
                     informationModels, _memoryCache);
             }
 
-            viewmodel.BusJourneysList = resultBusLocation.Data;
-            viewmodel.DestinationLocation = resultBusLocation.Data.First().DestinationLocation;
-            viewmodel.OriginLocation = resultBusLocation.Data.First().OriginLocation;
-            viewmodel.Date = model.Date;
         }
-        return View(viewmodel);
-        }       
-        //public IActionResult Privacy()
-        //{
-        //    return View();
-        //}
         ~HomeController()
         {
-       
-            //InMemoryCache.setKeyInMemory("aa","hh");
+            InMemoryCache.DeleteInMemory(_ipAdress, _memoryCache);
         }
+
         //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         //public IActionResult Error()
         //{

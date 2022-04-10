@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ObiletWebApp.Models.Models
 {
@@ -14,6 +10,5 @@ namespace ObiletWebApp.Models.Models
         public string Data { get; set; }
         public int? OriginId { get; set; }
         public int? DestinationId { get; set; }
-
     }
 }

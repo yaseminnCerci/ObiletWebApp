@@ -1,5 +1,4 @@
-﻿
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 
 namespace ObiletWebApp.Api.Models
 {
@@ -18,9 +17,7 @@ namespace ObiletWebApp.Api.Models
 
         [JsonProperty("browser")]
         public Browsers Browser { get; set; }
-
     }
-
   public class Connections
   {
       [JsonProperty("ip-address")]

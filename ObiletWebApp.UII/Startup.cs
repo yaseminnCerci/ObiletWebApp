@@ -1,23 +1,16 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.Linq;
-using System.Threading.Tasks;
 using AspNetCoreHero.ToastNotification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
-using Microsoft.Extensions.Caching.Memory;
 using ObiletWebApp.Api;
 using ObiletWebApp.Api.Abstract;
 using ObiletWebApp.Services.Abstract;
 using ObiletWebApp.Services.Concrete;
-using ObiletWebApp.UII.Helper;
 
 namespace ObiletWebApp.UII
 {

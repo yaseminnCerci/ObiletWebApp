@@ -1,7 +1,7 @@
 ﻿@model Models.BusLocationViewModel
 <style>
     .bootstrap-select {
-        width: 380px !important;
+        width: 100% !important;
     }
 
     .btnn {
@@ -21,11 +21,12 @@
             <div class="card">
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="BusJourney" class="card-body">
-                        <select class="selectpicker btn-lg origin" required name="OriginId" style="padding-bottom: 0; margin-bottom: 0 " id="origin" data-live-search="true" title="İl veya ilçe adı yazın" data-live-search-placeholder="İl veya ilçe adı yazın">
-
+                        <select class="selectpicker btn-lg origin" required name="OriginId" style="padding-bottom: 0; margin-bottom: 0 " id="origin" data-live-search="true" title="İl veya ilçe adı yazın"   data-live-search-placeholder="İl veya ilçe adı yazın">
+                        @if (Model.BusLocationList != null && Model.BusLocationList.Count > 0)
+                        {
                             @foreach (var item in Model.BusLocationList)
                             {
-                                if (Model.OriginId.HasValue && Model.OriginId.Value==item.Id)
+                                if (Model.OriginId.HasValue && Model.OriginId.Value == item.Id)
                                 {
                                     <option value=@item.Id selected="">@item.Name</option>
                                 }
@@ -33,15 +34,17 @@
                                 {
                                     <option value=@item.Id>@item.Name</option>
                                 }
-                             
+
                             }
+                        }
                         </select><br />
-                        <button class="btn btnn btn-sm " id="locationChange" style="margin-left: 20px; margin-top: 0; margin-bottom: 0"><i class="fa fa-arrow-circle-down"></i></button><br />
+                                 <div style="margin-left: 85% "><button type="button" class="btn btnn btn-sm " id="locationChange" style="margin-left: 20px; margin-top: 0;margin-bottom:0">&nbsp;<i class="fa  fa-arrows-v"></i>&nbsp;</button></div>
                         <select class="selectpicker btn-lg destination"required name="DestinationId" style="padding-top: 0;margin-top:0 " id="destination" data-live-search="true" data-live-search-placeholder="İl veya ilçe adı yazın" title="İl veya ilçe adı yazın">
-
+                        @if (Model.BusLocationList != null && Model.BusLocationList.Count > 0)
+                        {
                             @foreach (var item in Model.BusLocationList)
                             {
-                                if (Model.DestinationId.HasValue && Model.DestinationId.Value==item.Id)
+                                if (Model.DestinationId.HasValue && Model.DestinationId.Value == item.Id)
                                 {
                                     <option value=@item.Id selected="">@item.Name</option>
                                 }
@@ -51,20 +54,21 @@
                                 }
 
                             }
+                        }
                         </select>
                         <div class="row">
-                            <div class="col-lg-8">
+                            <div class="col-lg-9">
                                 <div class="datepicker date input-group p-0 shadow-sm" style="margin-top: 10px; margin-left: 18px;width: 100% ">
                                     <input type="text" name="Date" placeholder="Choose a reservation date" required value="@Model.Date.ToString("dd.MM.yyyy")" class="form-control" id="reservationDate">
                                     <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
+                            <div class="col-lg-3">
                                 <button type="button" class="btn btn-outline-dark btn-sm" id="bugun" style="margin-bottom: 2px; padding-top: 1px; padding-bottom: 1px;">Bugün</button><br />
                                 <button type="button" class="btn btn-outline-dark btn-sm" id="yarin" style=" padding-top: 1px; padding-bottom: 1px;">&nbsp;Yarın&nbsp;&nbsp;</button>
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-danger btn-block" id="BiletiniBul" style="margin: 10px;">Biletini Bul &nbsp; <i class="fa fa-arrow-right"></i></button>
+                        <button type="submit" class="btn btn-outline-primary btn-block" id="BiletiniBul" style=" margin: 10px;">Biletini Bul &nbsp; <i class="fa fa-arrow-right"></i></button>
                     </form>
                 </div>
             </div>
@@ -102,9 +106,6 @@
         }
         $('select[name=DestinationId]').val(originval);
         $('#destination').selectpicker('refresh');
-
-
-
     });
 
     $('.selectpicker').on('change', function () {
@@ -146,8 +147,6 @@
             });
         });
     });
-
-
     $('#destination').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
         $(".destination .bs-searchbox input").on('keyup', function () {
             var arama = $(this).val();
@@ -163,13 +162,9 @@
             });
         });
     });
-
-
     $('.datepicker').datepicker({
         clearBtn: false,
         format: "dd.mm.yyyy",
         startDate: new Date()
     });
-
-
 </script>

@@ -1,6 +1,4 @@
-﻿
-using System.ComponentModel;
-
+﻿using System.ComponentModel;
 
 namespace ObiletWebApp.Api.Models
 {
@@ -8,14 +6,17 @@ namespace ObiletWebApp.Api.Models
     {
         [Description("Success")]
         Success,
+       
         [Description("InvalidDepartureDate")]
         InvalidDepartureDate, 
+       
         [Description("InvalidRoute")]
         InvalidRoute, 
+      
         [Description("InvalidLocation")]
         InvalidLocation, 
+       
         [Description("Timeout")]
-        Timeout, 
-  
+        Timeout,
     }
 }
