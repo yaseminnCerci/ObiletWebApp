@@ -12,100 +12,89 @@
         cursor: pointer;
         border-radius: 25px;
     }
-  
 </style>
 
 <div class="container">
-<div class="row">
-    <div class="col-lg-3"></div>
-    <div class="col-lg-6"><div class="card">
-                              <div class="card-body">
-                                  <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="Privacy" class="card-body">
-                                      <select class="selectpicker btn-lg origin" name="OriginId" style="padding-bottom: 0; margin-bottom: 0 " id="origin" data-live-search="true" title="İl veya ilçe adı yazın" data-live-search-placeholder="İl veya ilçe adı yazın">
+    <div class="row">
+        <div class="col-lg-3"></div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data" asp-controller="Home" asp-action="BusJourney" class="card-body">
+                        <select class="selectpicker btn-lg origin" required name="OriginId" style="padding-bottom: 0; margin-bottom: 0 " id="origin" data-live-search="true" title="İl veya ilçe adı yazın" data-live-search-placeholder="İl veya ilçe adı yazın">
 
-                                          @foreach (var item in Model.BusLocationList)
-                                          {
-                                              <option value=@item.Id>@item.Name</option>
+                            @foreach (var item in Model.BusLocationList)
+                            {
+                                if (Model.OriginId.HasValue && Model.OriginId.Value==item.Id)
+                                {
+                                    <option value=@item.Id selected="">@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value=@item.Id>@item.Name</option>
+                                }
+                             
+                            }
+                        </select><br />
+                        <button class="btn btnn btn-sm " id="locationChange" style="margin-left: 20px; margin-top: 0; margin-bottom: 0"><i class="fa fa-arrow-circle-down"></i></button><br />
+                        <select class="selectpicker btn-lg destination"required name="DestinationId" style="padding-top: 0;margin-top:0 " id="destination" data-live-search="true" data-live-search-placeholder="İl veya ilçe adı yazın" title="İl veya ilçe adı yazın">
 
-                                          }
+                            @foreach (var item in Model.BusLocationList)
+                            {
+                                if (Model.DestinationId.HasValue && Model.DestinationId.Value==item.Id)
+                                {
+                                    <option value=@item.Id selected="">@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value=@item.Id>@item.Name</option>
+                                }
 
-
-                                      </select><br />
-                                      <button class="btn btnn btn-sm " id="locationChange" style="margin-left: 20px; margin-top: 0; margin-bottom: 0"><i class="fa fa-arrow-circle-down"></i></button><br />
-                                      <select class="selectpicker btn-lg destination" name="DestinationId" style="padding-top: 0;margin-top:0 " id="destination" data-live-search="true" data-live-search-placeholder="İl veya ilçe adı yazın" title="İl veya ilçe adı yazın">
-
-                                          @foreach (var item in Model.BusLocationList)
-                                          {
-                                              <option value=@item.Id>@item.Name</option>
-
-                                          }
-                                      </select>
-                                      <div class="row">
-                                          <div class="col-lg-8">
-                                              <div class="datepicker date input-group p-0 shadow-sm" style="margin-top: 10px; margin-left: 18px;width: 100% ">
-                                                  <input type="text" name="Date"placeholder="Choose a reservation date" value="@DateTime.Now.AddDays(1).ToString("dd/MM/yyyy")" class="form-control" id="reservationDate">
-                                                  <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
-                                              </div>
-                                          </div>
-                                          <div class="col-lg-4">
-                                              <button type="button" class="btn btn-outline-dark btn-sm" id="bugun" style="margin-bottom: 2px; padding-top: 1px; padding-bottom: 1px;">Bugün</button><br />
-                                              <button type="button" class="btn btn-outline-dark btn-sm" id="yarin" style=" padding-top: 1px; padding-bottom: 1px;">&nbsp;Yarın&nbsp;&nbsp;</button>
-
-                                          </div>
-                                      </div>
-                                      <button type="submit" class="btn btn-outline-danger btn-block" id="BiletiniBul" style="margin: 10px;">Biletini Bul &nbsp; <i class="fa fa-arrow-right"></i></button>
-                                  </form>
-                              </div>
+                            }
+                        </select>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="datepicker date input-group p-0 shadow-sm" style="margin-top: 10px; margin-left: 18px;width: 100% ">
+                                    <input type="text" name="Date" placeholder="Choose a reservation date" required value="@Model.Date.ToString("dd.MM.yyyy")" class="form-control" id="reservationDate">
+                                    <div class="input-group-append"><span class="input-group-text px-4"><i class="fa fa-calendar"></i></span></div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <button type="button" class="btn btn-outline-dark btn-sm" id="bugun" style="margin-bottom: 2px; padding-top: 1px; padding-bottom: 1px;">Bugün</button><br />
+                                <button type="button" class="btn btn-outline-dark btn-sm" id="yarin" style=" padding-top: 1px; padding-bottom: 1px;">&nbsp;Yarın&nbsp;&nbsp;</button>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-danger btn-block" id="BiletiniBul" style="margin: 10px;">Biletini Bul &nbsp; <i class="fa fa-arrow-right"></i></button>
+                    </form>
+                </div>
+            </div>
         </div>
-
+        <div class="col-lg-4"></div>
     </div>
-
-    <div class="col-lg-4"></div>
 </div>
-</div>
-
-
 <script type="text/javascript">
-    //$('#BiletiniBul').on('click', function() {
-    //    var origin = $("#origin").val();
-    //    var destination = $("#destination").val();
-    //    var rezervasyondate = $("#reservationDate").val();
-    //  var  from = rezervasyondate.split(".");
-    //    var f = new Date(from[2], from[1], from[0]);
-    //    console.log(rezervasyondate);
-    //    console.log(f);
-    //    window.location.href = "/Home/Privacy/?Date=" + f + "&DestinationId=" + destination + "&OriginId=" + origin;
-   
-    //});
-
-
-
-
-
-
 
     var date = new Date();
     $('#bugun').on('click', function () {
 
-            $('.datepicker').datepicker('setDate', date);
-        });
-    $('#yarin').on('click', function() {
-            $('.datepicker').datepicker('setDate', new Date(date.getFullYear(), date.getMonth(), (date.getDate() + 1)));
-        });
-    $('#locationChange').on('click', function() {
+        $('.datepicker').datepicker('setDate', date);
+    });
+    $('#yarin').on('click', function () {
+        $('.datepicker').datepicker('setDate', new Date(date.getFullYear(), date.getMonth(), (date.getDate() + 1)));
+    });
+    $('#locationChange').on('click', function () {
         var originval = $("#origin").val();
         var origintext = $("#origin").find("option:selected").text();
         var destinationval = $("#destination").val();
         var destinationtext = $("#destination").find("option:selected").text();
 
-        if ($("#origin option[value=" + destinationval + "]").length == 0)
-        {
+        if ($("#origin option[value=" + destinationval + "]").length == 0) {
             $('#origin').append('<option value=' + destinationval + '>' + destinationtext + '</option>');
             $('#origin').selectpicker('refresh');
         }
         $('select[name=OriginId]').val(destinationval);
         $('#origin').selectpicker('refresh');
-       
+
 
         if ($("#destination option[value=" + originval + "]").length == 0) {
             $('#destination').append('<option value=' + originval + '>' + origintext + '</option>');
@@ -117,8 +106,8 @@
 
 
     });
-    
-    $('.selectpicker').on('change', function() {
+
+    $('.selectpicker').on('change', function () {
 
         if ($("#origin").val() == $("#destination").val()) {
             notif({
@@ -133,11 +122,11 @@
         else {
             $('#BiletiniBul').removeAttr('disabled');
         }
-    
+
 
     });
     $('#origin').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        $(".origin .bs-searchbox input").on('keyup', function() {
+        $(".origin .bs-searchbox input").on('keyup', function () {
 
 
             var arama = $(this).val();
@@ -150,7 +139,7 @@
                 dataType: 'json',
                 data: { 'Search': arama },
                 success: function (data) {
-     
+
 
                     $('#origin').html(data.object).selectpicker('refresh');
                 }
@@ -160,7 +149,7 @@
 
 
     $('#destination').on('loaded.bs.select', function (e, clickedIndex, isSelected, previousValue) {
-        $(".destination .bs-searchbox input").on('keyup', function() {
+        $(".destination .bs-searchbox input").on('keyup', function () {
             var arama = $(this).val();
             $.ajax({
                 url: 'Home/BusLocationSearch',

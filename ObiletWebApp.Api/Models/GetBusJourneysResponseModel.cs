@@ -71,7 +71,7 @@ namespace ObiletWebApp.Api.Models
         public DateTimeOffset DisplayOffset { get; set; }
 
         [JsonProperty("partner-rating")]
-        public double PartnerRating { get; set; }
+        public double? PartnerRating { get; set; }
 
         [JsonProperty("has-dynamic-pricing")]
         public bool HasDynamicPricing { get; set; }
@@ -101,7 +101,7 @@ namespace ObiletWebApp.Api.Models
         public long Id { get; set; }
 
         [JsonProperty("priority")]
-        public long Priority { get; set; }
+        public long? Priority { get; set; }
 
         [JsonProperty("name")]
         public string Name { get; set; }
@@ -137,25 +137,25 @@ namespace ObiletWebApp.Api.Models
         public string Destination { get; set; }
 
         [JsonProperty("departure")]
-        public DateTimeOffset Departure { get; set; }
+        public DateTime Departure { get; set; }
 
         [JsonProperty("arrival")]
-        public DateTimeOffset Arrival { get; set; }
+        public DateTime Arrival { get; set; }
 
         [JsonProperty("currency")]
         public string Currency { get; set; }
 
         [JsonProperty("duration")]
-        public DateTimeOffset Duration { get; set; }
+        public DateTime Duration { get; set; }
 
         [JsonProperty("original-price")]
         public long OriginalPrice { get; set; }
 
         [JsonProperty("internet-price")]
-        public long InternetPrice { get; set; }
+        public long? InternetPrice { get; set; }
 
         [JsonProperty("provider-internet-price")]
-        public long ProviderInternetPrice { get; set; }
+        public long? ProviderInternetPrice { get; set; }
 
         [JsonProperty("booking")]
         public string Booking { get; set; }
@@ -210,7 +210,7 @@ namespace ObiletWebApp.Api.Models
         public string Station { get; set; }
 
         [JsonProperty("time")]
-        public DateTimeOffset Time { get; set; }
+        public DateTime? Time { get; set; }
 
         [JsonProperty("is-origin")]
         public bool IsOrigin { get; set; }

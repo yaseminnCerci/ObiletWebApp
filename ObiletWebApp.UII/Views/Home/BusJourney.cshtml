@@ -1,0 +1,126 @@
+﻿@model UII.Models.BusJourneysViewModel
+<style>
+    .container {
+        width: 1180px;
+        margin-top: 0em;
+    }
+
+    #accordion .panel {
+        border-radius: 0;
+        border: 0;
+        margin-top: 0px;
+    }
+
+    #accordion a {
+        display: block;
+        padding: 1px 1px;
+        text-decoration: none;
+        color: #444444;
+        font-size: 12px;
+    }
+
+    #accordion .panel-heading a.collapsed:hover,
+    #accordion .panel-heading a.collapsed:focus {
+        background-color: #b42b2b;
+        color: white;
+        transition: all 0.2s ease-in;
+    }
+
+        #accordion .panel-heading a.collapsed:hover::before,
+        #accordion .panel-heading a.collapsed:focus::before {
+            color: white;
+        }
+
+    #accordion .panel-heading {
+        padding: 0;
+        border-radius: 0px;
+        text-align: center;
+    }
+
+        #accordion .panel-heading a:not(.collapsed) {
+            color: white;
+            background-color: #b42b2b;
+            transition: all 0.2s ease-in;
+        }
+
+        /* Add Indicator fontawesome icon to the left */
+        #accordion .panel-heading .accordion-toggle::before {
+            font-family: 'FontAwesome';
+            content: '\f00d';
+            float: right;
+            color: white;
+            transform: rotate(0deg);
+            transition: all 0.2s ease-in;
+        }
+
+        #accordion .panel-heading .accordion-toggle.collapsed::before {
+            color: #444;
+            transform: rotate(-135deg);
+            transition: all 0.2s ease-in;
+        }
+</style>
+<div>
+
+    <div class="card text-white bg-primary">
+        <div class="card-header"><a href="@Url.Action("Index")" style="color: white"><i class="fa fa-arrow-left fa-2x"></i></a> <div style="text-align: center"><h3> @Model.OriginLocation - @Model.DestinationLocation<br />@Model.Date.ToString("dd MMMM dddd")</h3></div></div>
+
+    </div><br />
+
+
+    @foreach (var item in Model.BusJourneysList)
+    {
+    <div class="card border-primary ">
+        @*<div class="card-header">Header</div>*@
+        <div class="card-body">
+            <h5 class="card-title" style="color: #007bff">
+                <div class="row">
+                    <div class="col-lg-10">Kalkış<strong>-</strong> Varış</div>
+                    <div class="col-lg-2"><button class="btn btn-danger" style="horiz-align: right">@string.Format("{0:C}", @item.Price) @item.PriceType</button></div>
+                </div>
+            </h5>
+            <h5 style="color: #007bff">@item.Departure.ToString("HH:mm")<i class="fa fa-long-arrow-right"></i> @item.Arrival.ToString("HH:mm")</h5>
+            <p class="card-text">@item.Origin - @item.Destination</p>
+        </div>
+        @*<div class="card-footer">
+            <div class="row">
+                <div class="container col-lg-12">
+                    <div id="accordion" class="panel-group">
+                        <div class="panel">
+                            <div class="panel-heading">
+                                <h4 class="panel-title">
+
+                                    <a href="#panelBodyTwo@item.Id" class="accordion-toggle collapsed" data-toggle="collapse" data-parent="#accordion">Sefer Detayları</a>
+                                </h4>
+                            </div>
+                            <div id="panelBodyTwo@item.Id" class="panel-collapse collapse">
+                                <div class="panel-body">
+                                    <ul>
+                                        @foreach (var item2 in item.Stops)
+                                        {
+                                        <li>@item2.Name </li>
+                                        }
+                                    </ul>
+                                    <ul>
+                                        @if (item.Features != null)
+                                        {
+                                        @foreach (var item2 in item.Features)
+                                        {
+                                        <li>item2</li>
+                                        }
+                                        }
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>*@
+    </div><br /><br />
+    }
+
+
+
+</div>

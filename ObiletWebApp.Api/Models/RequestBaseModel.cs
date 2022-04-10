@@ -9,6 +9,7 @@ namespace ObiletWebApp.Api.Models
 {
     public class RequestBaseModel<T>
     {
+       
         public RequestBaseModel()
         {
             DeviceSession = new DeviceSession();

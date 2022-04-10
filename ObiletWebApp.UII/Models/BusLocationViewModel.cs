@@ -7,6 +7,10 @@ using ObiletWebApp.Models.Models;
 namespace ObiletWebApp.UII.Models
 {
     public class BusLocationViewModel
-    {public List<BusLocationListItem> BusLocationList { get; set; }
+    {
+        public DateTime Date { get; set; }
+        public int? OriginId { get; set; }
+        public int? DestinationId { get; set; }
+        public List<BusLocationListItem> BusLocationList { get; set; }
     }
 }

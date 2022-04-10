@@ -8,7 +8,8 @@ namespace ObiletWebApp.Services.Abstract
     {
         IDataResult<SessionResponseModel> GetSession(SessionRequestModel request);
         IDataResult<List<BusLocationListItem>> GetBusLocation(BusLocationRequestModel request);
-        //IDataResult<List<City>> GetCityList();
-        //IDataResult<List<District>> GetDistrictList(int id);
+        IDataResult<List<BusJourneysResponseModel>> GetBusJourneys(BusJourneryRequestModel request);
+
+
     }
 }

@@ -50,7 +50,7 @@ namespace ObiletWebApp.Api
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Authorization", "Basic " + token);
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", token);
             var paramater = JsonConvert.SerializeObject(request, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore, Formatting = Formatting.Indented });
 
             HttpContent httpContent = new StringContent(paramater, Encoding.UTF8, "application/json");
