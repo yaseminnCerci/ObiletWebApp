@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ObiletWebApp.Models.Models
 {
-    public class SessionResponseModel
+   public class BusLocationListItem
     {
-        public string SessionId { get; set; }
-        public string DeviceId { get; set; }
+        public long Id { get; set; }
+        public string Name { get; set; }
     }
 }

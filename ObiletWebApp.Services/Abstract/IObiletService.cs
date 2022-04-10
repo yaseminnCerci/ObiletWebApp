@@ -7,6 +7,7 @@ namespace ObiletWebApp.Services.Abstract
     public interface IObiletService
     {
         IDataResult<SessionResponseModel> GetSession(SessionRequestModel request);
+        IDataResult<List<BusLocationListItem>> GetBusLocation(BusLocationRequestModel request);
         //IDataResult<List<City>> GetCityList();
         //IDataResult<List<District>> GetDistrictList(int id);
     }

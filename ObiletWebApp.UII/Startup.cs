@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreHero.ToastNotification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Caching.Memory;
@@ -42,7 +43,15 @@ namespace ObiletWebApp.UII
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
                 options.RequestCultureProviders.Insert(0, new CookieRequestCultureProvider()); // type of CultureProvider you want.
+            }); 
+            services.AddNotyf(cfg =>
+            {
+                cfg.DurationInSeconds = 5;
+                cfg.IsDismissable = true;
+                cfg.Position = NotyfPosition.TopCenter;
             });
+
+            services.AddControllersWithViews().AddRazorRuntimeCompilation();
             services.AddDetection();
             services.AddDetectionCore().AddBrowser();
             services.AddMemoryCache();

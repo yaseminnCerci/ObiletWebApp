@@ -9,6 +9,10 @@ namespace ObiletWebApp.Api.Models
 {
     public class RequestBaseModel<T>
     {
+        public RequestBaseModel()
+        {
+            DeviceSession = new DeviceSession();
+        }
         [JsonProperty("device-session")]
         public DeviceSession DeviceSession { get; set; }
 
@@ -16,7 +20,7 @@ namespace ObiletWebApp.Api.Models
         public T Data { get; set; }
 
         [JsonProperty("date")]
-        public string Date { get; set; }
+        public DateTime Date { get; set; }
 
         [JsonProperty("language")]
         public string Language { get; set; }
