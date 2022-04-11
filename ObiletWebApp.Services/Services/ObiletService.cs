@@ -59,9 +59,10 @@ namespace ObiletWebApp.Services.Concrete
 
                 if (request.OriginId.HasValue)
                 {
-                    var origin = resultData.First(x => x.Id == request.OriginId);
-
-                    if (origin.Id == 0)
+                    var aa = resultData.Where(x => x.Id == request.OriginId);
+                    var origin = resultData.Where(x => x.Id == request.OriginId).Count()==0?0: resultData.First(x => x.Id == request.OriginId).Id;
+                  
+                    if (origin == 0)
                     {
                         var selectData = result.Data.First(x => x.Id == request.OriginId);
                         resultData.Add(new BusLocationListItem { Id = selectData.Id, Name = selectData.Name });
@@ -69,10 +70,10 @@ namespace ObiletWebApp.Services.Concrete
                 }
                 if (request.DestinationId.HasValue)
                 {
-                    var destination = resultData.First(x => x.Id == request.DestinationId);
+                    var destination = resultData.Where(x => x.Id == request.DestinationId).Count() == 0 ? 0 : resultData.First(x => x.Id == request.DestinationId).Id;
 
-                    if (destination.Id == 0)
-                        return new DataResult<List<BusLocationListItem>>(resultData, true);
+                    if (destination == 0)
+                    
                     {
                         var selectData = result.Data.First(x => x.Id == request.DestinationId);
                         resultData.Add(new BusLocationListItem { Id = selectData.Id, Name = selectData.Name });
